@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://cgxerktx1sxym"]
+
+[node name="HaxeUIRoot" type="HaxeUIRoot"]
+offset_right = 40.0
+offset_bottom = 40.0

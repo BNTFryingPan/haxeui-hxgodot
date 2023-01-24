@@ -1,0 +1,9 @@
+# add libs, let hxgodot add its extraParams.hxml first
+--library hxgodot
+--library haxeui-hxgodot
+--library compiletime
+# use dll entrypoint of haxelib
+--main HxGodot
+--class-path src
+# force include our gamecode into the extension
+--macro include('app', true)

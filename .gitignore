@@ -1,0 +1,7 @@
+bindings/
+haxeui-skelton/
+test-app/bin/
+test-app/export/
+test-app/bindings/
+test-app/.godot/
+test-app/.sconsign.dblite
