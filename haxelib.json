@@ -1,12 +1,12 @@
 {
    "name": "haxeui-hxgodot",
-   "license": "GPL",
+   "license": "MIT",
    "tags": [
       "haxeui",
       "godot"
    ],
    "description": "HaxeUI backend for Godot using HxGodot",
-   "version": "0.0.1",
+   "version": "0.1.0",
    "releasenote": "",
    "contributors": [
       "FryingPan"

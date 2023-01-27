@@ -8,7 +8,6 @@ class ComponentSurface {
    public var node:HaxeUINode;
 
    public function new() {
-      trace('created canvas item');
       this.node = new HaxeUINode();
       this.node.component = cast this;
    }

@@ -15,6 +15,7 @@ class TextDisplayImpl extends TextBase {
    function createLabel() {
       var _label = new Label();
       trace('created');
+      _label.text = "hi";
       parentComponent.add_child(_label);
       trace('added');
       return _label;

@@ -22,25 +22,49 @@ class ComponentImpl extends ComponentBase {
       }
    }
 
+   public static function getGodotColor(color:Null<Int>, alpha:Float = 1):Null<Color> {
+      if (color == null)
+         return null;
+      var c:haxe.ui.util.Color = color;
+      return new Color(c.r / 255, c.g / 255, c.b / 255, alpha);
+   }
+
    public override function godot_draw() {
-      trace('redrawing!');
+      // trace('redrawing!');
       if (style.backgroundColor != null) {
-         var bgcol:haxe.ui.util.Color = style.backgroundColor;
-         node.draw_rect(Rect2.fromXYWidthHeight(0, 0, width, height), new Color(bgcol.r / 255, bgcol.g / 255, bgcol.b / 255), true);
+         node.draw_rect(Rect2.fromXYWidthHeight(0, 0, width, height), getGodotColor(style.backgroundColor, style.backgroundOpacity), true);
+      }
+      if (style.borderTopColor != null && style.borderTopSize != null) {
+         if (style.borderStyle == "solid")
+            node.draw_line(new Vector2(0, 0), new Vector2(width, 0), getGodotColor(style.borderTopColor, style.borderOpacity), style.borderTopSize);
+      }
+      if (style.borderLeftColor != null && style.borderLeftSize != null) {
+         if (style.borderStyle == "solid")
+            node.draw_line(new Vector2(0, 0), new Vector2(0, height), getGodotColor(style.borderLeftColor, style.borderOpacity), style.borderLeftSize);
+      }
+      if (style.borderRightColor != null && style.borderRightSize != null) {
+         if (style.borderStyle == "solid")
+            node.draw_line(new Vector2(width, height), new Vector2(width, 0), getGodotColor(style.borderRightColor, style.borderOpacity),
+               style.borderRightSize);
+      }
+      if (style.borderBottomColor != null && style.borderBottomSize != null) {
+         if (style.borderStyle == "solid")
+            node.draw_line(new Vector2(width, height), new Vector2(0, height), getGodotColor(style.borderBottomColor, style.borderOpacity),
+               style.borderBottomSize);
       }
    }
 
    private override function handlePosition(left:Null<Float>, top:Null<Float>, style:Style) {
-      // var transform = this.node.get_transform();
+      var position = node.get_position();
 
       if (left != null)
-         node.position.x = left;
+         position.x = left;
       if (top != null)
-         node.position.y = top;
+         position.y = top;
 
-      trace(node.position.x);
+      node.set_position(position);
 
-      trace('${pad(this.id)}: move -> ${left}x${top}');
+      // trace('${pad(this.id)}: move -> ${left}x${top}');
    }
 
    private override function handleSize(width:Null<Float>, height:Null<Float>, style:Style) {
@@ -50,7 +74,7 @@ class ComponentImpl extends ComponentBase {
 
       this.node.set_size(new Vector2(width, height));
 
-      trace('${pad(this.id)}: size -> ${width}x${height}');
+      // trace('${pad(this.id)}: size -> ${width}x${height}');
    }
 
    //***********************************************************************************************************
@@ -62,25 +86,25 @@ class ComponentImpl extends ComponentBase {
    }
 
    private override function handleAddComponent(child:Component):Component {
-      trace('${pad(this.id)}: add component -> ${child.id}');
-      this.node.add_child(child.node, null, 0);
+      // trace('${pad(this.id)}: add component -> ${child.id}');
+      this.node.add_child(child.node);
       return child;
    }
 
    private override function handleAddComponentAt(child:Component, index:Int):Component {
       trace('${pad(this.id)}: add component at index -> ${child.id}, ${index}');
-      this.node.add_child(child.node, null, 0);
+      this.node.add_child(child.node);
       return child;
    }
 
    private override function handleRemoveComponent(child:Component, dispose:Bool = true):Component {
-      trace('${pad(this.id)}: remove component -> ${child.id}');
+      // trace('${pad(this.id)}: remove component -> ${child.id}');
       this.node.remove_child(child.node);
       return child;
    }
 
    private override function handleRemoveComponentAt(index:Int, dispose:Bool = true):Component {
-      trace('${pad(this.id)}: remove component at index -> ${index}');
+      // trace('${pad(this.id)}: remove component at index -> ${index}');
       this.node.remove_child(this.node.get_child(index));
       return null;
    }
@@ -91,6 +115,13 @@ class ComponentImpl extends ComponentBase {
    private override function applyStyle(style:Style) {
       trace('${pad(this.id)}: apply style ->');
       this.node.queue_redraw();
+
+      if (style.opacity != null) {
+         var mod = this.node.modulate;
+         mod.a = style.opacity;
+         this.node.modulate = mod;
+      }
+
       if (style.backgroundColor != null) {
          if (style.backgroundColorEnd != null) {
             trace('${pad("")}:     background color: 0x'

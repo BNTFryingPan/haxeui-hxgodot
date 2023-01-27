@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://cgxerktx1sxym"]
+
+[ext_resource type="Texture2D" uid="uid://cswr8vy4lt7dt" path="res://icon.png" id="1_cgmoc"]
+
+[node name="Node" type="Node"]
+
+[node name="Icon" type="Sprite2D" parent="."]
+position = Vector2(14, 44)
+texture = ExtResource("1_cgmoc")
+
+[node name="HaxeUIRoot" type="HaxeUIRoot" parent="."]
+offset_right = 1152.0
+offset_bottom = 648.0
