@@ -1,3 +1,7 @@
 package haxe.ui.backend;
 
-typedef ToolkitOptions = {}
+import godot.Node;
+
+typedef ToolkitOptions = {
+   ?container:Node
+}

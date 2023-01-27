@@ -1,5 +1,8 @@
 package haxe.ui.backend;
 
+import godot.variant.Color;
+import godot.variant.Vector2;
+import godot.variant.Rect2;
 import haxe.ui.core.Component;
 import haxe.ui.core.TextDisplay;
 import haxe.ui.events.UIEvent;
@@ -19,10 +22,23 @@ class ComponentImpl extends ComponentBase {
       }
    }
 
-   private override function handlePosition(left:Null<Float>, top:Null<Float>, style:Style) {
-      if (left == null && top == null) {
-         return;
+   public override function godot_draw() {
+      trace('redrawing!');
+      if (style.backgroundColor != null) {
+         var bgcol:haxe.ui.util.Color = style.backgroundColor;
+         node.draw_rect(Rect2.fromXYWidthHeight(0, 0, width, height), new Color(bgcol.r / 255, bgcol.g / 255, bgcol.b / 255), true);
       }
+   }
+
+   private override function handlePosition(left:Null<Float>, top:Null<Float>, style:Style) {
+      // var transform = this.node.get_transform();
+
+      if (left != null)
+         node.position.x = left;
+      if (top != null)
+         node.position.y = top;
+
+      trace(node.position.x);
 
       trace('${pad(this.id)}: move -> ${left}x${top}');
    }
@@ -31,6 +47,8 @@ class ComponentImpl extends ComponentBase {
       if (width == null || height == null || width < 0 || height < 0) {
          return;
       }
+
+      this.node.set_size(new Vector2(width, height));
 
       trace('${pad(this.id)}: size -> ${width}x${height}');
    }
@@ -45,21 +63,25 @@ class ComponentImpl extends ComponentBase {
 
    private override function handleAddComponent(child:Component):Component {
       trace('${pad(this.id)}: add component -> ${child.id}');
+      this.node.add_child(child.node, null, 0);
       return child;
    }
 
    private override function handleAddComponentAt(child:Component, index:Int):Component {
       trace('${pad(this.id)}: add component at index -> ${child.id}, ${index}');
+      this.node.add_child(child.node, null, 0);
       return child;
    }
 
    private override function handleRemoveComponent(child:Component, dispose:Bool = true):Component {
       trace('${pad(this.id)}: remove component -> ${child.id}');
+      this.node.remove_child(child.node);
       return child;
    }
 
    private override function handleRemoveComponentAt(index:Int, dispose:Bool = true):Component {
       trace('${pad(this.id)}: remove component at index -> ${index}');
+      this.node.remove_child(this.node.get_child(index));
       return null;
    }
 
@@ -68,6 +90,7 @@ class ComponentImpl extends ComponentBase {
    //***********************************************************************************************************
    private override function applyStyle(style:Style) {
       trace('${pad(this.id)}: apply style ->');
+      this.node.queue_redraw();
       if (style.backgroundColor != null) {
          if (style.backgroundColorEnd != null) {
             trace('${pad("")}:     background color: 0x'

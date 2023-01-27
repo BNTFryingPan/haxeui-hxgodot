@@ -1,0 +1,7 @@
+{
+   "haxe.configurations": [
+      [
+         "./extraParams.hxml"
+      ]
+   ]
+}
